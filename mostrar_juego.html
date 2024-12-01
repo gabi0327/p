@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrar juegos</title>
+
+
+    <style>
+        /* Estilos base para móviles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .eliminar-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .eliminar-btn:hover {
+            background-color: #bd2130;
+        }
+
+        /* Media queries para tabletas */
+        @media screen and (min-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                padding: 8px;
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* Media queries para pantallas grandes */
+        @media screen and (min-width: 1024px) {
+            .container {
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        a {
+            text-decoration: none;
+            justify-content: center;
+            text-align: center;
+            display: flex;
+            color: rgb(255, 255, 255);
+            background-color: blue;
+            margin-top: 5px;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de juegos</h1>
+        <table id="juegosTable">
+            <thead>
+                <tr>
+                    <th>Nombre del juego</th>
+                    <th>Precio</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody id="juegosBody">
+                <!-- Aquí irán los datos de los juegos -->
+            </tbody>
+        </table>
+
+        <a href="./insertar_juego.html">Volver al Inicio</a>
+    </div>
+
+    <script>
+        // Obtener los juegos desde localStorage
+        const juegos = JSON.parse(localStorage.getItem('juegos') || '{}');
+
+        // Función para mostrar los juegos en la tabla
+        function mostrarJuegos() {
+            const tbody = document.getElementById('juegosBody');
+            tbody.innerHTML = ''; // Limpiar el contenido anterior
+
+            Object.values(juegos).forEach(juego => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${juego.nombre}</td>
+                    <td>$${juego.precio.toFixed(2)}</td>
+                    <td>
+                        <button class="eliminar-btn">Eliminar</button>
+                    </td>
+                `;
+                
+                row.querySelector('.eliminar-btn').addEventListener('click', () => eliminarJuego(juego));
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Función para eliminar un juego del arreglo y actualizar la tabla
+        function eliminarJuego(juego) {
+            const index = Object.values(juegos).findIndex(u => u.nombre === juego.nombre);
+            if (index !== -1) {
+                juegos.splice(index, 1);
+                localStorage.setItem('juegos', JSON.stringify(juegos));
+                mostrarJuegos(); // Actualizar la lista después de eliminar
+            }
+        }
+
+        // Ejecutar la función cuando el documento esté listo
+        document.addEventListener('DOMContentLoaded', mostrarJuegos);
+    </script>
+</body>
+</html>

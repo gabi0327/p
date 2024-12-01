@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertar juego</title>
+
+
+    <style>
+        :root {
+            --bg-color: #f9fafd;
+            --primary-color: #3498db;
+            --secondary-color: #e74c3c;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+            border: 1px solid black;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        form {
+            display: grid;
+            gap: 20px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(var(--secondary-color), 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        a {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            justify-content: center;
+            text-align: center;
+            display: flex;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Insertar juego</h1>
+        <form id="juegoForm">
+            <input type="text" id="nombre" placeholder="Nombre del juego" required>
+            <input type="number" id="precio" placeholder="Precio del juego" min="0" step="0.01"  required>
+            <button type="submit">Guardar</button>
+        </form>
+        <a href="./insertar_juego.html">Inicio</a>
+
+        <a href="./mostrar_juego.html">Mostrar Juego</a>
+  
+    </div>
+
+    <script>
+        // Función para cargar juegos guardados al iniciar la aplicación
+        function cargarJuegos() {
+            const juegosGuardados = localStorage.getItem('juegos');
+            if (juegosGuardados) {
+                juegos = JSON.parse(juegosGuardados);
+            }
+        }
+
+        // Arreglo para almacenar los juegos
+        let juegos = [];
+
+        // Función para buscar un juego por nombre
+        function buscarJuegoPorNombre(nombre) {
+            return juegos.find(juego => juego.nombre === nombre);
+        }
+
+        // Función para guardar un juego
+        function guardarJuego(juego) {
+            const juegoExistente = buscarJuegoPorNombre(juego.nombre);
+            
+            if (juegoExistente) {
+                // Mostrar alerta de advertencia
+                if (confirm(`El juego ${juego.nombre} ya existe.`)) {
+                    mostrarResultado(`Juego ${juego.nombre} sobrescrito.`);
+                    juegos[juegos.findIndex(u => u.nombre === juego.nombre)] = juego;
+                    localStorage.setItem('juegos', JSON.stringify(juegos));
+                } else {
+                    mostrarResultado('Operación cancelada.');
+                }
+            } else {
+                juegos.push(juego);
+                mostrarResultado(`Juego ${juego.nombre} guardado correctamente.`);
+                
+                // Guardar los juegos en localStorage
+                localStorage.setItem('juegos', JSON.stringify(juegos));
+            }
+        }
+
+        // Event listener para el formulario
+        document.getElementById('juegoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Obtenemos los valores de los inputs
+            const nombre = document.getElementById('nombre').value;
+            const precio = parseFloat(document.getElementById('precio').value);
+
+            // Creamos un objeto juego
+            const juego = { nombre, precio };
+
+            // Guardamos el juego
+            guardarJuego(juego);
+
+            // Reiniciamos los campos del formulario
+            document.getElementById('nombre').value = '';
+            document.getElementById('precio').value = '';
+
+            // Mostramos solo el mensaje de éxito
+        });
+
+        // Función para mostrar resultados en la pantalla usando alert()
+        function mostrarResultado(mensaje) {
+            window.alert(mensaje);
+        }
+
+        // Cargar juegos al iniciar la aplicación
+        cargarJuegos();
+    </script>
+</body>
+</html>
