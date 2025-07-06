@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Personas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        form { margin-bottom: 20px; }
+        input { margin: 5px 0; padding: 5px; }
+        button { padding: 5px 15px; background: #4CAF50; color: white; border: none; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 5px; background: #f9f9f9; margin: 3px 0; }
+    </style>
+</head>
+<body>
+    <h1>📝 Registro de Personas</h1>
+    
+    <!-- Formulario para agregar datos -->
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="nombre">Nombre:</label><br>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+            <label for="carnet">Carnet de Identidad:</label><br>
+            <input type="text" id="carnet" name="carnet" required>
+        </div>
+        <button type="submit">💾 Guardar</button>
+    </form>
+
+    <!-- Lista de personas registradas -->
+    <h2>👥 Personas registradas:</h2>
+    {% if personas %}
+        <ul>
+            {% for persona in personas %}
+            <li>{{ persona.nombre }} - <strong>{{ persona.carnet }}</strong></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay personas registradas aún. ¡Sé el primero!</p>
+    {% endif %}
+</body>
+</html>
